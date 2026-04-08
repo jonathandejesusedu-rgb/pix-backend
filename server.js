@@ -1,21 +1,30 @@
-const express = require("express");
-const axios = require("axios");
+app.get("/pix", async (req, res) => {
+  try {
+    const response = await axios.post(
+      "https://api.paradisepags.com/v1/transactions",
+      {
+        amount: 5000,
+        paymentMethod: "pix",
+        customer: {
+          name: "Cliente Teste",
+          email: "cliente@email.com"
+        }
+      },
+      {
+        headers: {
+          "X-API-Key": "sk_62969b67edd2adec815b1b87440cca0414c15fc589f60ca54aafdc82099610d9",
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-const app = express();
+    res.json(response.data);
 
-// Rota principal
-app.get("/", (req, res) => {
-  res.send("Servidor rodando");
+  } catch (error) {
+    console.log("ERRO REAL:", error.response?.data || error.message);
+    res.json({
+      erro: true,
+      detalhe: error.response?.data || error.message
+    });
+  }
 });
-
-// Rota do Pix (TEMPORARIAMENTE SEM API)
-app.get("/pix", (req, res) => {
-  res.json({
-    status: "ok",
-    mensagem: "Rota funcionando"
-  });
-});
-
-// Porta obrigatória do Render
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Servidor rodando na porta " + PORT));
