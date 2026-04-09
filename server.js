@@ -1,3 +1,12 @@
+const express = require("express");
+const axios = require("axios");
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Servidor rodando");
+});
+
 app.get("/pix", async (req, res) => {
   try {
     const response = await axios.post(
@@ -19,12 +28,11 @@ app.get("/pix", async (req, res) => {
     );
 
     res.json(response.data);
-
   } catch (error) {
-    console.log("ERRO REAL:", error.response?.data || error.message);
-    res.json({
-      erro: true,
-      detalhe: error.response?.data || error.message
-    });
+    console.log(error.message);
+    res.send("Erro ao gerar Pix");
   }
 });
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Servidor rodando na porta " + PORT));
